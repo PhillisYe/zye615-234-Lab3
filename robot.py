@@ -21,15 +21,15 @@ class Robot:
     class State:
         def __init__(self, direction: Direction, row: int, col: int):
             self.direction: Direction = direction
-            self.row: int = col
-            self.col: int = row
+            self.row: int = row
+            self.col: int = col
 
         def clone(self):
             return Robot.State(self.direction, self.row, self.col)
 
     def __init__(self):
         self._history: List[Robot.State] = list()
-        self._state: Robot.state = Robot.State(Direction.EAST, 10, 1)
+        self._state: Robot.State = Robot.State(Direction.NORTH, 10, 1)
         self._history.append(self._state)
 
     def turn(self):
@@ -46,20 +46,27 @@ class Robot:
             raise IllegalMoveException
 
         self._state = self._state.clone()
-        self._history.append(self._state)
+
 
         if self._state.direction == Direction.NORTH:
-            self._state.row += 1
+            self._state.row -= 1
         elif self._state.direction == Direction.EAST:
             self._state.col += 1
         elif self._state.direction == Direction.SOUTH:
             self._state.row += 1
         elif self._state.direction == Direction.WEST:
-            self._state.col += 1
+            self._state.col -= 1
+        self._history.append(self._state)
 
     def back_track(self):
-        self._history.pop()
-        self._state = self._history[-1]
+        if self._history == []:
+            self._state = self._state
+        elif len(self._history) == 1:
+            self._history.pop()
+            self._state = self._state
+        else:
+            self._history.pop()
+            self._state = self._history[-1]
 
     def state(self):
         return {
